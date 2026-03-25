@@ -1,24 +1,52 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>AI Prediction</title>
+
 <style>
-#result {
-    margin-top: 20px;
-    font-size: 16px;
-    font-weight: bold;
-    color: #22c55e;
-    font-family: monospace;
-    text-shadow: 0 0 5px #22c55e;
+body {
+    margin: 0;
+    height: 100vh;
+    background: #0f172a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-family: Arial;
+}
+
+.container {
+    text-align: center;
+}
+
+input, button {
+    padding: 10px;
+    margin: 5px;
 }
 </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>AI Prediction</h1>
+
+    <input id="text" placeholder="Nhập text">
+    <button onclick="send()">Predict</button>
+
+    <p id="result"></p>
+</div>
+
 <script>
 async function send() {
     let value = document.getElementById("text").value;
-    let resultBox = document.getElementById("result");
+    let result = document.getElementById("result");
 
     if (!value) {
-        resultBox.innerText = "Nhập gì đó đi.";
+        result.innerText = "Nhập gì đó đi";
         return;
     }
-
-    resultBox.innerText = "Đang phân tích...";
 
     try {
         let res = await fetch("/predict", {
@@ -30,15 +58,16 @@ async function send() {
         let data = await res.json();
 
         if (data.prediction === "positive") {
-            resultBox.innerText = ">>> POSITIVE // Tín hiệu tích cực được phát hiện.";
-        } else if (data.prediction === "negative") {
-            resultBox.innerText = ">>> NEGATIVE // Cảnh báo: năng lượng tiêu cực.";
+            result.innerText = "POSITIVE";
         } else {
-            resultBox.innerText = ">>> UNKNOWN // Không xác định.";
+            result.innerText = "NEGATIVE";
         }
 
-    } catch (error) {
-        resultBox.innerText = ">>> ERROR // Hệ thống gặp sự cố.";
+    } catch (e) {
+        result.innerText = "ERROR";
     }
 }
 </script>
+
+</body>
+</html>
