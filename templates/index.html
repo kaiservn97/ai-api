@@ -1,31 +1,34 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>AI Demo</title>
-</head>
-<body style="text-align:center; margin-top:100px;">
-
-<h1>✨ AI Prediction ✨</h1>
-
-<input id="text" placeholder="Nhập text">
-<button onclick="send()">Predict</button>
-
-<p id="result"></p>
-
 <script>
 async function send() {
     let value = document.getElementById("text").value;
+    let resultBox = document.getElementById("result");
 
-    let res = await fetch("/predict", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({data: value})
-    });
+    if (!value) {
+        resultBox.innerText = "Nhập gì đó đi.";
+        return;
+    }
 
-    let data = await res.json();
-    document.getElementById("result").innerText = data.prediction;
+    resultBox.innerText = "Đang phân tích...";
+
+    try {
+        let res = await fetch("/predict", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({data: value})
+        });
+
+        let data = await res.json();
+
+        if (data.prediction === "positive") {
+            resultBox.innerText = ">>> POSITIVE // Tín hiệu tích cực được phát hiện.";
+        } else if (data.prediction === "negative") {
+            resultBox.innerText = ">>> NEGATIVE // Cảnh báo: năng lượng tiêu cực.";
+        } else {
+            resultBox.innerText = ">>> UNKNOWN // Không xác định.";
+        }
+
+    } catch (error) {
+        resultBox.innerText = ">>> ERROR // Hệ thống gặp sự cố.";
+    }
 }
 </script>
-
-</body>
-</html>
